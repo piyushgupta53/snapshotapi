@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 import { Space_Mono } from "next/font/google";
+import AuthProvider from "./components/AuthProvider";
 
 const spaceMono = Space_Mono({
   subsets: ["latin"],
@@ -22,7 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={spaceMono.className}>{children}</body>
+      <AuthProvider>
+        <body className={spaceMono.className}>{children}</body>
+      </AuthProvider>
     </html>
   );
 }
