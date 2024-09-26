@@ -1,7 +1,17 @@
 import React from "react";
-import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/options";
+import { Menu } from "lucide-react";
+
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import SideNav from "./SideNav";
 
 export default async function TopNav() {
   const session = await getServerSession(authOptions);
@@ -12,14 +22,26 @@ export default async function TopNav() {
         <h1 className="text-lg font-bold">SnapshotPro</h1>
       </div>
 
-      <div className="w-8 h-8 rounded-full flex items-center">
-        <Image
-          src={session?.user.image!}
-          width={24}
-          height={24}
-          alt="profile"
-          className="rounded-full"
-        />
+      {/* <div className="hidden max-sm:flex items-center">
+        <button>
+          <Menu />
+        </button>
+      </div> */}
+
+      <div className="sm:hidden flex items-center">
+        {" "}
+        {/* Only show on small screens */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <button>
+              <Menu />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="right" className="p-0 w-[60%]">
+            <div className="text-black">Test Content</div>
+            <SideNav />
+          </SheetContent>
+        </Sheet>
       </div>
     </div>
   );

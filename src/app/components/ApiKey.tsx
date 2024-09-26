@@ -62,7 +62,7 @@ export default function Keys({ apiKey: initialApiKey }: KeysProps) {
   };
 
   return (
-    <div className="pl-60 min-h-screen">
+    <div className="sm:pl-60 min-h-screen">
       <div className="px-8 py-20 w-full">
         <h1 className="font-semibold text-lg">API Keys</h1>
 
