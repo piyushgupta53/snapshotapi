@@ -192,10 +192,12 @@ export default function PlaygroundComponent({
                     <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
                   </div>
+
                   <div className="flex-grow text-center text-sm text-gray-600 truncate">
                     {url || "https://example.com"}
                   </div>
                 </div>
+
                 <div className="bg-white p-4">
                   <div className="aspect-video w-full flex items-center justify-center">
                     {isLoading ? (
