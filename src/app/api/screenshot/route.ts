@@ -1,5 +1,5 @@
+import * as puppeteer from "puppeteer";
 import { NextRequest, NextResponse } from "next/server";
-import puppeteer from "puppeteer";
 import { ObjectCannedACL } from "@aws-sdk/client-s3";
 import { PrismaClient } from "@prisma/client";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
@@ -71,6 +71,11 @@ export async function POST(req: NextRequest) {
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
 
+    if (fullPage) {
+      // Scroll through the page to trigger lazy-loaded content
+      await autoScroll(page);
+    }
+
     // Take screenshot
     const screenshot = await page.screenshot({
       fullPage,
@@ -114,4 +119,23 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+async function autoScroll(page: puppeteer.Page): Promise<void> {
+  await page.evaluate(async () => {
+    await new Promise<void>((resolve) => {
+      let totalHeight = 0;
+      const distance = 100;
+      const timer = setInterval(() => {
+        const scrollHeight = document.body.scrollHeight;
+        window.scrollBy(0, distance);
+        totalHeight += distance;
+
+        if (totalHeight >= scrollHeight) {
+          clearInterval(timer);
+          resolve();
+        }
+      }, 100);
+    });
+  });
 }
