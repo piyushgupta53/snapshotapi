@@ -14,7 +14,7 @@ export default function SideNav() {
   ];
 
   return (
-    <div className="hidden sm:block w-60 h-screen bg-studio-100 fixed left-0 top-0 overflow-y-auto">
+    <div className="hidden sm:block w-60 h-screen bg-orchid-white-50 border-r fixed left-0 top-0 overflow-y-auto">
       <div className="flex flex-col p-4">
         <div className="mb-10">
           <h1 className="text-xl font-semibold">Screenshot</h1>
@@ -24,22 +24,23 @@ export default function SideNav() {
           {navItems.map((item) => (
             <div
               key={item.href}
-              className={`p-2 rounded-md hover:cursor-pointer ${
-                pathname === item.href
-                  ? "bg-studio-300/80"
-                  : "hover:bg-studio-200/50"
-              }`}
+              className="p-2 rounded-md hover:cursor-pointer relative hover:bg-persian-blue-200/30"
             >
               <Link href={item.href}>
                 <ul
                   className={`font-medium flex gap-2 items-center ${
-                    pathname === item.href ? "text-studio-950" : "text-gray-600"
+                    pathname === item.href
+                      ? "text-persian-blue-950"
+                      : "text-gray-600"
                   }`}
                 >
                   <item.icon />
                   {item.label}
                 </ul>
               </Link>
+              {pathname === item.href && (
+                <div className="absolute right-0 top-0 bottom-0 w-1 bg-persian-blue-500"></div>
+              )}
             </div>
           ))}
         </div>

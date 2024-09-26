@@ -2,7 +2,7 @@ import { Copy, Eye } from "lucide-react";
 
 export default function Keys() {
   return (
-    <div className="sm:pl-60 min-h-screen">
+    <div className="pl-60 min-h-screen">
       <div className="px-8 py-20 w-full">
         <h1 className="font-semibold text-lg">API Keys</h1>
 
@@ -31,8 +31,10 @@ export default function Keys() {
                   <Copy />
                 </button>
 
-                <button className="bg-red-400 px-2 py-2 rounded-lg">
-                  <p className="text-white font-medium">Regenerate</p>
+                <button className=" border-persian-blue-500 hover:bg-gray-100 border  px-2 py-2 rounded-lg">
+                  <p className="text-persian-blue-500 font-medium">
+                    Regenerate
+                  </p>
                 </button>
               </div>
             </div>

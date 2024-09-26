@@ -8,7 +8,7 @@ export default function Layout({
   return (
     <div className="flex h-screen">
       <SideNav />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 bg-orchid-white-100/20">{children}</main>
     </div>
   );
 }
