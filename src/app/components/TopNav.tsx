@@ -9,7 +9,7 @@ export default async function TopNav() {
   return (
     <div className="w-full flex justify-between items-center h-10 bg-orchid-white-50 border-b fixed p-4">
       <div>
-        <h1>ScreenshotAPI</h1>
+        <h1>Easy Snapshot</h1>
       </div>
 
       <div className="w-8 h-8 rounded-full flex items-center">

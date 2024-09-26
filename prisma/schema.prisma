@@ -8,13 +8,13 @@ datasource db {
 }
 
 model User {
-  id            String       @id @default(uuid())
-  email         String       @unique
-  name          String?
-  apiKey        ApiKey?
-  screenshots   Screenshot[]
-  plan          Plan         @default(FREE)
-  createdAt     DateTime     @default(now())
+  id          String       @id @default(uuid())
+  email       String       @unique
+  name        String?
+  apiKey      ApiKey?
+  screenshots Screenshot[]
+  plan        Plan         @default(FREE)
+  createdAt   DateTime     @default(now())
 }
 
 model ApiKey {
@@ -29,6 +29,7 @@ model ApiKey {
 model Screenshot {
   id        String   @id @default(uuid())
   url       String
+  s3Url     String
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   createdAt DateTime @default(now())
