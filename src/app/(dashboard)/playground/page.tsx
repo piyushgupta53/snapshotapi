@@ -145,9 +145,23 @@ export default function Playground() {
 
             <div>
               <h2 className="font-semibold mb-2">Screenshot Preview</h2>
-              <div className="border border-slate-200 rounded-lg p-4 bg-gray-50">
-                <div className="aspect-video w-full bg-white flex items-center justify-center">
-                  <p className="text-slate-400">Screenshot will appear here</p>
+              <div className="border border-slate-200 rounded-lg overflow-hidden">
+                <div className="bg-gray-200 p-2 flex items-center">
+                  <div className="flex space-x-2 mr-4">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  </div>
+                  <div className="flex-grow text-center text-sm text-gray-600 truncate">
+                    {url || "https://example.com"}
+                  </div>
+                </div>
+                <div className="bg-white p-4">
+                  <div className="aspect-video w-full flex items-center justify-center">
+                    <p className="text-slate-400">
+                      Screenshot will appear here
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
