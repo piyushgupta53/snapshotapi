@@ -1,6 +1,6 @@
 "use client";
 
-import { Gamepad2, KeyRound, LayoutDashboard } from "lucide-react";
+import { Gamepad2, KeyRound, LayoutDashboard, ChartLine } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -9,8 +9,9 @@ export default function SideNav() {
 
   const navItems = [
     { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    { href: "/keys", icon: KeyRound, label: "API Keys" },
     { href: "/playground", icon: Gamepad2, label: "Playground" },
+    { href: "/requests", icon: ChartLine, label: "Requests" },
+    { href: "/keys", icon: KeyRound, label: "API Keys" },
   ];
 
   return (
