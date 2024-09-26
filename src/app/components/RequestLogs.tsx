@@ -30,7 +30,7 @@ export default function RequestLogs({ requests }: RequestLogsProps) {
                         className={`px-2 py-1 rounded-full text-xs font-semibold
                         ${"bg-green-100 text-green-800"}`}
                       >
-                        Completed
+                        Success
                       </span>
                     </td>
 
