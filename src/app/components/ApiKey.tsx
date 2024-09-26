@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import { Copy, CopyCheck, Eye, EyeOff } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface KeysProps {
   apiKey: string | undefined;

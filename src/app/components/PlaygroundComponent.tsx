@@ -1,6 +1,7 @@
 "use client";
 
 import { Fullscreen } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 
 interface PlaygroundComponentProps {
@@ -205,7 +206,7 @@ export default function PlaygroundComponent({
                     ) : error ? (
                       <p className="text-red-500">{error}</p>
                     ) : screenshotUrl ? (
-                      <img
+                      <Image
                         src={screenshotUrl}
                         alt="Screenshot"
                         className="max-w-full max-h-full object-contain"

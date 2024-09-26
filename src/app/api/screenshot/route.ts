@@ -1,6 +1,5 @@
 import * as puppeteer from "puppeteer";
 import { NextRequest, NextResponse } from "next/server";
-import { ObjectCannedACL } from "@aws-sdk/client-s3";
 import { PrismaClient } from "@prisma/client";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";

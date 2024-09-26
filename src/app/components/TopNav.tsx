@@ -1,21 +1,10 @@
 import React from "react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/options";
 import { Menu } from "lucide-react";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SideNav from "./SideNav";
 
 export default async function TopNav() {
-  const session = await getServerSession(authOptions);
-
   return (
     <div className="w-full flex justify-between items-center h-10 bg-orchid-white-50 border-b fixed p-4">
       <div>
