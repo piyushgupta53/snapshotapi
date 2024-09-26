@@ -17,6 +17,10 @@ export default function Keys({ apiKey: initialApiKey }: KeysProps) {
 
   const { data: session } = useSession();
 
+  if (!session) {
+    return;
+  }
+
   const regenerateApiKey = async () => {
     setIsLoading(true);
     try {
@@ -33,7 +37,7 @@ export default function Keys({ apiKey: initialApiKey }: KeysProps) {
             key: data.apiKey,
           },
           create: {
-            userId: session?.user.id!,
+            userId: session?.user.id,
             key: data.apiKey,
           },
         });

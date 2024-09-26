@@ -14,5 +14,9 @@ export default async function Playground() {
     select: { key: true },
   });
 
-  return <PlaygroundComponent apiKey={apiKey?.key!} />;
+  if (!apiKey) {
+    return;
+  }
+
+  return <PlaygroundComponent apiKey={apiKey?.key} />;
 }
