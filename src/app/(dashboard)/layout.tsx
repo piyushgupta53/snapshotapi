@@ -1,4 +1,5 @@
 import SideNav from "../components/SideNav";
+import TopNav from "../components/TopNav";
 
 export default function Layout({
   children,
@@ -6,9 +7,12 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex h-screen">
-      <SideNav />
-      <main className="flex-1 bg-orchid-white-100/20">{children}</main>
-    </div>
+    <>
+      <TopNav />
+      <div className="flex h-screen">
+        <SideNav />
+        <main className="flex-1 bg-orchid-white-100/20">{children}</main>
+      </div>
+    </>
   );
 }

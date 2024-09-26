@@ -14,12 +14,8 @@ export default function SideNav() {
   ];
 
   return (
-    <div className="hidden sm:block w-60 h-screen bg-orchid-white-50 border-r fixed left-0 top-0 overflow-y-auto">
-      <div className="flex flex-col p-4">
-        <div className="mb-10">
-          <h1 className="text-xl font-semibold">Screenshot</h1>
-        </div>
-
+    <div className="hidden sm:block w-60 mt-10 h-screen bg-orchid-white-50 border-r fixed left-0 top-0 overflow-y-auto">
+      <div className="flex flex-col p-4 mt-5">
         <div className="space-y-2">
           {navItems.map((item) => (
             <div
