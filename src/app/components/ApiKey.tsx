@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/hooks/use-toast";
 import prisma from "@/lib/prisma";
 import { Copy, CopyCheck, Eye, EyeOff } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -16,6 +17,7 @@ export default function Keys({ apiKey: initialApiKey }: KeysProps) {
   const [copySuccess, setCopySuccess] = useState(false);
 
   const { data: session } = useSession();
+  const { toast } = useToast();
 
   if (!session) {
     return;
@@ -30,6 +32,10 @@ export default function Keys({ apiKey: initialApiKey }: KeysProps) {
       if (response.ok) {
         const data = await response.json();
         setApiKey(data.apiKey);
+
+        toast({
+          title: "✅ New Key Generated!",
+        });
 
         await prisma.apiKey.upsert({
           where: { userId: session?.user.id },
@@ -59,6 +65,9 @@ export default function Keys({ apiKey: initialApiKey }: KeysProps) {
     try {
       await navigator.clipboard.writeText(apiKey);
       setCopySuccess(true);
+      toast({
+        title: "✅ Copied!",
+      });
       setTimeout(() => setCopySuccess(false), 2000);
     } catch (err) {
       console.error("Failed to copy API key: ", err);
@@ -78,35 +87,43 @@ export default function Keys({ apiKey: initialApiKey }: KeysProps) {
               Use your API Key to generate screenshots
             </p>
 
-            <div className="mt-4 flex w-full max-w-lg flex-col sm:flex-row space-y-2 sm:space-y-0 items-center space-x-2">
-              <div className="flex gap-2">
-                <input
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  readOnly
-                  type={showApiKey ? "text" : "password"}
-                  value={apiKey}
-                />
+            <div className="mt-4 flex w-full max-w-lg flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+              <input
+                className="flex h-10 w-full sm:w-auto sm:flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                readOnly
+                type={showApiKey ? "text" : "password"}
+                value={apiKey}
+              />
 
+              <div className="flex flex-row gap-2 sm:w-auto">
                 <button
-                  className="border border-slate-200 rounded-lg px-3 hover:bg-gray-100"
+                  className="flex-1 sm:flex-initial border border-slate-200 rounded-lg px-3 py-2 hover:bg-gray-100"
                   onClick={toggleApiKeyVisibility}
                 >
-                  {showApiKey ? <EyeOff /> : <Eye />}
+                  {showApiKey ? (
+                    <EyeOff className="mx-auto" />
+                  ) : (
+                    <Eye className="mx-auto" />
+                  )}
                 </button>
 
                 <button
-                  className="border border-slate-200 rounded-lg px-3 hover:bg-gray-100"
+                  className="flex-1 sm:flex-initial border border-slate-200 rounded-lg px-3 py-2 hover:bg-gray-100"
                   onClick={copyApiKey}
                 >
-                  {copySuccess ? <CopyCheck /> : <Copy />}
+                  {copySuccess ? (
+                    <CopyCheck className="mx-auto" />
+                  ) : (
+                    <Copy className="mx-auto" />
+                  )}
                 </button>
 
                 <button
-                  className="border-persian-blue-500 hover:bg-gray-100 border px-2 py-2 rounded-lg"
+                  className="flex-1 sm:flex-initial border-persian-blue-500 hover:bg-gray-100 border px-2 py-2 rounded-lg"
                   onClick={regenerateApiKey}
                   disabled={isLoading}
                 >
-                  <p className="text-persian-blue-500 font-medium">
+                  <p className="text-persian-blue-500 font-medium text-center">
                     {isLoading ? "Generating..." : "Generate"}
                   </p>
                 </button>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/hooks/use-toast";
 import { Fullscreen } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -20,6 +21,8 @@ export default function PlaygroundComponent({
   const [screenshotUrl, setScreenshotUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const { toast } = useToast();
 
   const apiUrl = `/api/screenshot?url=${encodeURIComponent(
     url
@@ -44,7 +47,13 @@ export default function PlaygroundComponent({
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
+      toast({
+        title: "🎉 Screenshot Generated!",
+      });
+
       const data = await response.json();
+      console.log("Console data", data);
+
       setScreenshotUrl(data.screenshotUrl);
     } catch (err) {
       setError("Failed to generate screenshot. Please try again.");
@@ -210,6 +219,8 @@ export default function PlaygroundComponent({
                         src={screenshotUrl}
                         alt="Screenshot"
                         className="max-w-full max-h-full object-contain"
+                        width={viewport.width}
+                        height={viewport.height}
                       />
                     ) : (
                       <p className="text-slate-400">
