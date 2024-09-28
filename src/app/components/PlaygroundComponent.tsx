@@ -3,7 +3,8 @@
 import { useToast } from "@/hooks/use-toast";
 import { Fullscreen } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { debounce } from "lodash";
 
 interface PlaygroundComponentProps {
   apiKey: string;
@@ -24,44 +25,47 @@ export default function PlaygroundComponent({
 
   const { toast } = useToast();
 
-  const apiUrl = `/api/screenshot?url=${encodeURIComponent(
-    url
-  )}&fullPage=${fullPage}&width=${viewport.width}&height=${
-    viewport.height
-  }&format=${imageFormat}&delay=${delay}&timeout=${timeout}`;
+  const getApiUrl = useCallback(() => {
+    return `/api/screenshot?url=${encodeURIComponent(
+      url
+    )}&fullPage=${fullPage}&width=${viewport.width}&height=${
+      viewport.height
+    }&format=${imageFormat}&delay=${delay}&timeout=${timeout}`;
+  }, [url, fullPage, viewport, imageFormat, delay, timeout]);
 
-  const handleScreenshot = async () => {
-    setIsLoading(true);
-    setError("");
-    setScreenshotUrl("");
+  const debouncedHandleScreenshot = useCallback(
+    debounce(async () => {
+      setIsLoading(true);
+      setError("");
+      setScreenshotUrl("");
 
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "x-api-key": apiKey, // Replace with actual API key
-        },
-      });
+      try {
+        const response = await fetch(getApiUrl(), {
+          method: "POST",
+          headers: {
+            "x-api-key": apiKey,
+          },
+        });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        toast({
+          title: "🎉 Screenshot Generated!",
+        });
+
+        const data = await response.json();
+        setScreenshotUrl(data.screenshotUrl);
+      } catch (err) {
+        setError("Failed to generate screenshot. Please try again.");
+        console.error("Screenshot error:", err);
+      } finally {
+        setIsLoading(false);
       }
-
-      toast({
-        title: "🎉 Screenshot Generated!",
-      });
-
-      const data = await response.json();
-      console.log("Console data", data);
-
-      setScreenshotUrl(data.screenshotUrl);
-    } catch (err) {
-      setError("Failed to generate screenshot. Please try again.");
-      console.error("Screenshot error:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    }, 300),
+    [getApiUrl, apiKey, toast]
+  );
 
   return (
     <div className="sm:pl-60 min-h-screen">
@@ -169,7 +173,7 @@ export default function PlaygroundComponent({
 
               <button
                 className="bg-persian-blue-500 max-w-fit rounded-lg px-4 py-2 hover:bg-persian-blue-500/90 disabled:opacity-50"
-                onClick={handleScreenshot}
+                onClick={debouncedHandleScreenshot}
                 disabled={isLoading || !url}
               >
                 <p className="text-white flex gap-2 items-center">
@@ -187,7 +191,7 @@ export default function PlaygroundComponent({
               <div className="bg-gray-800 p-4 rounded-lg overflow-hidden shadow-inner">
                 <pre className="whitespace-pre-wrap break-all text-sm">
                   <code className="text-green-400 font-mono">
-                    {apiUrl.split("&").join("&\n ")}
+                    {getApiUrl().split("&").join("&\n ")}
                   </code>
                 </pre>
               </div>
