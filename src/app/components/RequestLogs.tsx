@@ -30,6 +30,8 @@ const RequestRow = React.memo(({ request }: { request: Screenshot }) => (
   </tr>
 ));
 
+RequestRow.displayName = "RequestRow";
+
 export default function RequestLogs({ requests }: RequestLogsProps) {
   const memoizedRequests = useMemo(() => requests, [requests]);
 
