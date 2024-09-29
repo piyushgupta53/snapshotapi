@@ -41,39 +41,35 @@ export async function POST(req: NextRequest) {
 
     // Extract query parameters
     const url = req.nextUrl.searchParams.get("url");
-    const fullPage = req.nextUrl.searchParams.get("fullPage") === "true";
-    const width = parseInt(req.nextUrl.searchParams.get("width") || "1280", 10);
-    const height = parseInt(
-      req.nextUrl.searchParams.get("height") || "720",
-      10
-    );
+    const fullPage = req.nextUrl.searchParams.get("fullPage");
+    const width = req.nextUrl.searchParams.get("width") || "1280";
+    const height = req.nextUrl.searchParams.get("height") || "720";
     const imageFormat = req.nextUrl.searchParams.get("format") || "png";
-    const delay = parseInt(req.nextUrl.searchParams.get("delay") || "0", 10);
-    const timeout = parseInt(
-      req.nextUrl.searchParams.get("timeout") || "30000",
-      10
-    );
+    const delay = req.nextUrl.searchParams.get("delay") || "0";
+    const timeout = req.nextUrl.searchParams.get("timeout") || "30000";
 
     if (!url) {
       return NextResponse.json({ error: "URL is required" }, { status: 400 });
     }
 
-    // Call Render API
-    const renderResponse = await fetch(RENDER_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        url,
-        fullPage,
-        width,
-        height,
-        imageFormat,
-        delay,
-        timeout,
-      }),
+    // Construct query string for Render API
+    const queryParams = new URLSearchParams({
+      url,
+      ...(fullPage && { fullPage }),
+      width,
+      height,
+      imageFormat,
+      delay,
+      timeout,
     });
+
+    // Call Render API
+    const renderResponse = await fetch(
+      `${RENDER_API_URL}?${queryParams.toString()}`,
+      {
+        method: "POST",
+      }
+    );
 
     if (!renderResponse.ok) {
       throw new Error(
