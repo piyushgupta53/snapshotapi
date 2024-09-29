@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
-import chromium from "@sparticuz/chromium";
-import * as puppeteer from "puppeteer";
 
 const prisma = new PrismaClient();
 
@@ -15,6 +13,10 @@ const s3Client = new S3Client({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
+
+const RENDER_API_URL =
+  process.env.RENDER_API_URL ||
+  "https://screenshot-api-node.onrender.com/screenshot";
 
 export async function POST(req: NextRequest) {
   try {
@@ -56,42 +58,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "URL is required" }, { status: 400 });
     }
 
-    const executablePath = await chromium.executablePath();
-
-    // Launch the browser
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath,
-      headless: chromium.headless,
+    // Call Render API
+    const renderResponse = await fetch(RENDER_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        url,
+        fullPage,
+        width,
+        height,
+        imageFormat,
+        delay,
+        timeout,
+      }),
     });
 
-    const page = await browser.newPage();
-
-    // Set viewport
-    await page.setViewport({ width, height });
-
-    // Navigate to URL
-    await page.goto(url, { waitUntil: "networkidle0", timeout });
-
-    // Wait for specified delay
-    if (delay > 0) {
-      await new Promise((resolve) => setTimeout(resolve, delay));
+    if (!renderResponse.ok) {
+      throw new Error(
+        `Render API responded with status: ${renderResponse.status}`
+      );
     }
 
-    if (fullPage) {
-      // Scroll through the page to trigger lazy-loaded content
-      await autoScroll(page);
-    }
-
-    // Take screenshot
-    const screenshot = await page.screenshot({
-      fullPage,
-      type: imageFormat as "jpeg" | "png" | "webp",
-    });
-
-    // Close browser
-    await browser.close();
+    const screenshot = await renderResponse.arrayBuffer();
 
     // Generate a unique filename for the screenshot
     const filename = `${uuidv4()}.${imageFormat}`;
@@ -100,7 +90,7 @@ export async function POST(req: NextRequest) {
     const uploadParams = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
       Key: filename,
-      Body: screenshot,
+      Body: Buffer.from(screenshot),
       ContentType: `image/${imageFormat}`,
     };
 
@@ -127,23 +117,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-async function autoScroll(page: puppeteer.Page): Promise<void> {
-  await page.evaluate(async () => {
-    await new Promise<void>((resolve) => {
-      let totalHeight = 0;
-      const distance = 100;
-      const timer = setInterval(() => {
-        const scrollHeight = document.body.scrollHeight;
-        window.scrollBy(0, distance);
-        totalHeight += distance;
-
-        if (totalHeight >= scrollHeight) {
-          clearInterval(timer);
-          resolve();
-        }
-      }, 100);
-    });
-  });
 }
