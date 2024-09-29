@@ -26,11 +26,16 @@ export default function PlaygroundComponent({
   const { toast } = useToast();
 
   const getApiUrl = useCallback(() => {
-    return `/api/screenshot?url=${encodeURIComponent(
-      url
-    )}&fullPage=${fullPage}&width=${viewport.width}&height=${
-      viewport.height
-    }&format=${imageFormat}&delay=${delay}&timeout=${timeout}`;
+    const params = new URLSearchParams({
+      url: encodeURIComponent(url),
+      fullPage: fullPage.toString(),
+      width: viewport.width.toString(),
+      height: viewport.height.toString(),
+      format: imageFormat,
+      delay: delay.toString(),
+      timeout: timeout.toString(),
+    });
+    return `/api/screenshot?${params.toString()}`;
   }, [url, fullPage, viewport, imageFormat, delay, timeout]);
 
   const debouncedHandleScreenshot = useCallback(
@@ -51,11 +56,16 @@ export default function PlaygroundComponent({
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
+        const data = await response.json();
+
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
         toast({
           title: "🎉 Screenshot Generated!",
         });
 
-        const data = await response.json();
         setScreenshotUrl(data.screenshotUrl);
       } catch (err) {
         setError("Failed to generate screenshot. Please try again.");
