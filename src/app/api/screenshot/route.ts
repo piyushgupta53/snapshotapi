@@ -1,8 +1,9 @@
-import * as puppeteer from "puppeteer";
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
+import chromium from "@sparticuz/chromium";
+import * as puppeteer from "puppeteer";
 
 const prisma = new PrismaClient();
 
@@ -55,8 +56,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "URL is required" }, { status: 400 });
     }
 
-    // Launch browser
-    const browser = await puppeteer.launch();
+    const executablePath = await chromium.executablePath();
+
+    // Launch the browser
+    const browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath,
+      headless: chromium.headless,
+    });
+
     const page = await browser.newPage();
 
     // Set viewport
