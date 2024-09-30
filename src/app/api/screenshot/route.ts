@@ -14,9 +14,7 @@ const s3Client = new S3Client({
   },
 });
 
-const RENDER_API_URL =
-  process.env.RENDER_API_URL ||
-  "https://screenshot-api-node.onrender.com/screenshot";
+const RENDER_API_URL = process.env.RENDER_API_URL;
 
 export async function POST(req: NextRequest) {
   try {
